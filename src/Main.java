@@ -1,6 +1,4 @@
 import java.text.DecimalFormat;
-import java.text.NumberFormat;
-import java.util.Currency;
 import java.util.Scanner;
 
 public class Main {
@@ -59,13 +57,10 @@ public class Main {
         System.out.println("Payment calendar:");
         System.out.println("----------------------------------------");
 
-        double totalLoanAmount = 0;
-        double totalAmountPaid = 0;
-
         for (int i = 0; i <= numberOfPayments; i++) {
 
-            totalLoanAmount = mortgagePayment * (numberOfPayments - i);
-            totalAmountPaid = mortgagePayment * i;
+            double totalLoanAmount = mortgagePayment * (numberOfPayments - i);
+            double totalAmountPaid = mortgagePayment * i;
 
             String formattedTotalLoanAmount = decimalFormat.format(totalLoanAmount);
             String formattedTotalAmountPaid = decimalFormat.format(totalAmountPaid);
