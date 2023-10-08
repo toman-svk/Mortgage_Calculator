@@ -6,35 +6,61 @@ import java.util.Scanner;
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-
-        final byte MONTHS_IN_YEAR = 12;
-        final byte PERCENT = 100;
-        Scanner scanner = new Scanner(System.in);
         Currency usd = Currency.getInstance("USD");
         NumberFormat currencyFormat = NumberFormat.getCurrencyInstance();
         currencyFormat.setCurrency(usd);
 
-        System.out.print("Principal ($): ");
-        float principal = scanner.nextFloat();
+        int principal = (int) readNumber("Principal: ",1_000, 1_000_000);
+        float annualInterestRate = (float) readNumber("Annual Interest Rate: ", 0, 1);
+        byte years = (byte) readNumber("Number of years: ", 1, 30);
 
-        System.out.print("Annual Interest Rate (%): ");
-        float annualInterestRate = scanner.nextFloat();
-
-        System.out.print("Period (Years): ");
-        byte period = scanner.nextByte();
-
-        float r = annualInterestRate / PERCENT;
-        float mocnitel = (float) Math.pow(1+r,period);
-        float mortgage = principal * (r * mocnitel) / (mocnitel - 1);
-
+        double mortgage = calculateMortgage(principal, annualInterestRate, years);
         String mortgageFormatted = currencyFormat.format(mortgage);
-        String monthlyMortgageFormatted = currencyFormat.format(mortgage/MONTHS_IN_YEAR);
-        String totalAmountPaidFormatted = currencyFormat.format(mortgage*period);
 
         System.out.println(" ");
-        System.out.println("Annual mortgage payments will be " + mortgageFormatted + ".");
-        System.out.println("Monthly mortgage payments will be " + monthlyMortgageFormatted + ".");
-        System.out.println("Total paid amount will be " + totalAmountPaidFormatted + ".");
+        System.out.println("Monthly mortgage payments will be " + mortgageFormatted + ".");
 
     }
+
+    public static double readNumber(
+            String prompt,
+            double min,
+            double max) {
+
+        Scanner scanner = new Scanner(System.in);
+        double scannedValue;
+
+        while (true) {
+
+            System.out.println(prompt);
+            scannedValue = scanner.nextDouble();
+            if (scannedValue >= min && scannedValue <= max)
+                break;
+            System.out.println("Enter a value between " + min + " and " + max + "!");
+        }
+
+        return scannedValue;
+
+    }
+
+
+    public static double calculateMortgage(
+            int principal,
+            float annualInterest,
+            byte years) {
+
+        final byte MONTHS_IN_YEAR = 12;
+        final byte PERCENT = 100;
+
+        short numberOfPayments = (short) (years * MONTHS_IN_YEAR);
+        float monthlyInterest = annualInterest / PERCENT / MONTHS_IN_YEAR;
+
+        double mortgage = principal
+                * (monthlyInterest * Math.pow(1 + monthlyInterest, numberOfPayments)
+                / (Math.pow(1 + monthlyInterest, numberOfPayments)));
+
+        return mortgage;
+
+    }
+
 }
